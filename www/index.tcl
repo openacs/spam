@@ -13,7 +13,7 @@ ad_page_contract {
     context:onevalue
 }
 
-set user_id [ad_maybe_redirect_for_registration]
+set user_id [auth::require_login]
 
 # a message is considered unsent if sent_p is false
 
