@@ -2,7 +2,8 @@ create table spam_messages (
 	-- extends acs_mail_bodies
 	spam_id		integer not null	
 			constraint spam_messages_spam_id_fk
-			references acs_mail_links(mail_link_id),
+			references acs_mail_links(mail_link_id)
+                        on delete cascade,
 	-- date to send the spam out 
 	-- spam will be put in mail queue at that time
 	send_date	date not null,

@@ -36,6 +36,7 @@ ad_proc -public spam_base {} {
 	"}]
 }
 
+
 ad_proc spam_new_message {
     {-context_id [db_null]}
     {-send_date [db_null]}
@@ -51,6 +52,17 @@ ad_proc spam_new_message {
     Requires that send_date be a string in the format
     "YYYY-MM-DD HH:MI:SS AM"; nearly ANSI but 12-hour time with AM/PM
 } {
+
+    # TilmannS: add a leading zero to the time, otherwise postgresql's
+    # to_timestamp chokes. The default (produced by
+    # spam_timeentrywidget, which uses ns_dbformvalueput) brings us a
+    # string like this: '2001-08-31 7:45:00 PM' but we need something
+    # like that: '2001-08-31 07:45:00 PM'. Not the most elegant
+    # solution and not meant to be final - in my opinion the
+    # time_widget needs some overall improvement here (is there
+    # something general in ACS for this kind of stuff?).
+    regsub { (\d):} $send_date { 0\1:} send_date
+
     set sql_proc  "
     begin
       :1 := spam.new (
@@ -67,6 +79,9 @@ ad_proc spam_new_message {
      );
      end;"
     
+    set user_id [ad_get_user_id]
+    set peeraddr [ad_conn peeraddr]
+
     return [db_exec_plsql spam_insert_message $sql_proc]
 }
 
@@ -94,6 +109,16 @@ ad_proc spam_update_message {
          plain_text => :plain
        );
      end;"
+
+    # TilmannS: add a leading zero to the time, otherwise postgresql's
+    # to_timestamp chokes. The default (produced by
+    # spam_timeentrywidget, which uses ns_dbformvalueput) brings us a
+    # string like this: '2001-08-31 7:45:00 PM' but we need something
+    # like that: '2001-08-31 07:45:00 PM'. Not the most elegant
+    # solution and not meant to be final - in my opinion the
+    # time_widget needs some overall improvement here (is there
+    # something general in ACS for this kind of stuff?).
+    regsub { (\d):} $send_date { 0\1:} send_date
     
     return [db_exec_plsql spam_update_message $sql_proc]
 }
@@ -134,18 +159,20 @@ ad_proc -private spam_put_in_outgoing_queue {spam_id} {
 	where p2.party_id = parties.party_id
     "]
     db_transaction {
-	set id [db_exec_plsql spam_insert_into_outgoing {
-	    begin
-		  :1 := acs_mail_queue_message.new (
+
+	foreach email $recipients {
+            set id [db_exec_plsql spam_insert_into_outgoing {
+                begin
+                :1 := acs_mail_queue_message.new (
 		    body_id => :body_id,
 		    context_id => :context_id,
 		    creation_date => :creation_date,
 		    creation_user => :creation_user,
 		    creation_ip => :creation_ip
 		);
-	    end;
-	}]
-	foreach email $recipients {
+                end;
+            }]
+
 	    db_dml spam_set_outgoing_addresses {
 		insert into acs_mail_queue_outgoing 
 		  (message_id, envelope_from, envelope_to)

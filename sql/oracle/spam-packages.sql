@@ -22,6 +22,7 @@ as
 	send_date     in date
     ) return acs_objects.object_id%TYPE;
 
+
     procedure edit (
         spam_id       in spam_messages.spam_id%TYPE,
         title         in acs_mail_bodies.header_subject%TYPE        default null,
@@ -31,16 +32,23 @@ as
  	send_date     in date
     );
 
+
     function new_content (
         context_id    in acs_objects.context_id%TYPE,
         creation_date in acs_objects.creation_date%TYPE default sysdate,
         creation_user in acs_objects.creation_user%TYPE default null,
         creation_ip   in acs_objects.creation_ip%TYPE   default null,
         object_type   in acs_objects.object_type%TYPE   default 'acs_content',
-	mime_type     in acs_contents.mime_type%TYPE    default 'text/plain',
-	text	      in varchar2			default null
-    ) return acs_objects.object_id%TYPE;
+	mime_type     in cr_revisions.mime_type%TYPE    default 'text/plain',
+	p_text	      in varchar2			default null,
 
+        -- TilmannS: the body_id of the spam message that this content 
+        -- item will be associated with. Added to provide unique name 
+        -- for the cr
+        p_body_id     in acs_mail_bodies.body_id%TYPE
+
+    ) return acs_objects.object_id%TYPE;
+ 
     procedure approve (
 	spam_id    in spam_messages.spam_id%TYPE
     );
@@ -72,10 +80,10 @@ as
     IS
 	v_link_id	acs_objects.object_id%TYPE;
 	v_body_id	acs_objects.object_id%TYPE;
-	v_content_obj   acs_mail_bodies.content_object_id%TYPE;
-	tmp_blob 	BLOB;
-	v_html_id 	acs_mail_bodies.content_object_id%TYPE;
-	v_text_id      acs_mail_bodies.content_object_id%TYPE;
+	v_content_obj   acs_mail_bodies.content_item_id%TYPE;
+	v_html_id 	acs_mail_bodies.content_item_id%TYPE;
+	v_text_id       acs_mail_bodies.content_item_id%TYPE;
+        v_dummy         integer;
     begin
 	v_body_id := acs_mail_body.new (
 		body_id => null,
@@ -87,7 +95,7 @@ as
 		creation_date => creation_date,
 		creation_user => creation_user,
 		creation_ip => creation_ip, 
-		object_type => object_type
+		object_type => 'acs_mail_body'
 	);
 
 	if plain_text is not null then
@@ -98,7 +106,8 @@ as
 			creation_ip => creation_ip, 
 			object_type => object_type,
 			mime_type => 'text/plain',
-			text => plain_text
+			p_text => plain_text,
+                        p_body_id => v_body_id
 		);
 	end if;
 
@@ -110,7 +119,8 @@ as
 			creation_ip => creation_ip, 
 			object_type => object_type,
 			mime_type => 'text/html',
-			text => html_text
+			p_text => html_text,
+                        p_body_id => v_body_id
 		);
 	end if;
 
@@ -129,8 +139,8 @@ as
 			creation_ip => creation_ip, 
 			object_type => object_type
 		);
-		acs_mail_multipart.add_content(v_content_obj, v_text_id);
-		acs_mail_multipart.add_content(v_content_obj, v_html_id);
+                v_dummy := acs_mail_multipart.add_content(v_content_obj, v_text_id);
+		v_dummy := acs_mail_multipart.add_content(v_content_obj, v_html_id);
 	elsif plain_text is not null then
 		v_content_obj := v_text_id;
 	elsif html_text is not null then
@@ -168,10 +178,13 @@ as
 	v_creation_ip	acs_objects.creation_ip%TYPE;
 	v_creation_date	acs_objects.creation_date%TYPE;
 	v_body_id	acs_objects.object_id%TYPE;
-	v_content_obj   acs_mail_bodies.content_object_id%TYPE;
-	tmp_blob 	BLOB;
-	v_html_id 	acs_mail_bodies.content_object_id%TYPE;
-	v_text_id      acs_mail_bodies.content_object_id%TYPE;
+	v_content_obj   acs_mail_bodies.content_item_id%TYPE;
+	v_html_id 	acs_mail_bodies.content_item_id%TYPE;
+	v_text_id       acs_mail_bodies.content_item_id%TYPE;
+        v_dummy         integer;
+
+        v_parts_row     acs_mail_multipart_parts%ROWTYPE;
+
     begin
 	select 
 		body_id, context_id, creation_user, creation_date, creation_ip 
@@ -185,34 +198,37 @@ as
 	and 	spam_id = edit.spam_id
 	and 	object_id = edit.spam_id;
 
+	select content_item_id into v_content_obj 
+		from acs_mail_bodies
+		where body_id = v_body_id;
+
 	update acs_mail_bodies
-		set content_object_id = null,
+		set content_item_id = null,
 		header_subject = edit.title
 	where body_id = v_body_id;
 
 	-- now we have the body id of the spam message.
 	-- nuke any content associated with it.
-	select content_object_id into v_content_obj 
-		from acs_mail_bodies
-		where body_id = v_body_id;
+
 	if acs_mail_multipart.multipart_p(v_content_obj) = 't' then
 		-- we have a multipart
 		-- and thus have to nuke the components.
-		select content_id into v_text_id 
-			from acs_contents, acs_mail_multipart_parts
-			where multipart_id = v_content_obj
-			and content_id = content_object_id
-			and mime_type = 'text/plain';
-		select content_id into v_html_id 
-			from acs_contents, acs_mail_multipart_parts
-			where multipart_id = v_content_obj
-			and content_id = content_object_id
-			and mime_type = 'text/html';
-		acs_content.delete(v_text_id);
-		acs_content.delete(v_html_id);
-		acs_mail_multipart.delete(v_content_obj);
+
+                for v_parts_row in (select content_item_id from acs_mail_multipart_parts where multipart_id=v_content_obj) loop
+
+                        -- cannot delete content_item as long as 
+                        -- acs_mail_multipart_parts references it, so 
+                        -- we set it null here. There's propably a more
+                        -- elegant way to do this though. (TilmannS)
+                        update acs_mail_multipart_parts set content_item_id=null where multipart_id=v_content_obj;
+
+                        content_item.delete(v_parts_row.content_item_id);
+                end loop;
+
+     		acs_mail_multipart.delete(v_content_obj);
+
 	else 
-		acs_content.delete(v_content_obj);
+		content_item.delete(v_content_obj);
 	end if;
 
 	if plain_text is not null then
@@ -222,7 +238,8 @@ as
 			creation_user => v_creation_user,
 			creation_ip => v_creation_ip, 
 			mime_type => 'text/plain',
-			text => plain_text
+			p_text => plain_text,
+                        p_body_id => v_body_id
 		);
 	end if;
 
@@ -233,7 +250,8 @@ as
 			creation_user => v_creation_user,
 			creation_ip => v_creation_ip, 
 			mime_type => 'text/html',
-			text => html_text
+			p_text => html_text,
+                        p_body_id => v_body_id
 		);
 	end if;
 
@@ -251,16 +269,14 @@ as
 			creation_user => v_creation_user,
 			creation_ip => v_creation_ip
 		);
-		acs_mail_multipart.add_content(v_content_obj, v_text_id);
-		acs_mail_multipart.add_content(v_content_obj, v_html_id);
+		v_dummy := acs_mail_multipart.add_content(v_content_obj, v_text_id);
+		v_dummy := acs_mail_multipart.add_content(v_content_obj, v_html_id);
 	elsif plain_text is not null then
 		v_content_obj := v_text_id;
 	elsif html_text is not null then
 		v_content_obj := v_html_id;
 	end if;
 	acs_mail_body.set_content_object(v_body_id, v_content_obj);
-
-	
 	
 	update spam_messages	
 		set sql_query = edit.sql_query,
@@ -275,27 +291,31 @@ as
         creation_user in acs_objects.creation_user%TYPE default null,
         creation_ip   in acs_objects.creation_ip%TYPE   default null,
         object_type   in acs_objects.object_type%TYPE   default null,
-	mime_type     in acs_contents.mime_type%TYPE    default 'text/plain',
-	text	      in varchar2			default null
+	mime_type     in cr_revisions.mime_type%TYPE    default 'text/plain',
+	p_text	      in varchar2			default null,
+        p_body_id     in acs_mail_bodies.body_id%TYPE
+
     ) return acs_objects.object_id%TYPE
     is 
-	tmp_blob BLOB;
-	v_id integer;
+	v_id            integer;
+        v_rev_id        integer;
     begin
-	v_id := acs_mail_gc_object.new (
-		context_id => context_id,
-		creation_date => creation_date,
-		creation_user => creation_user,
-		creation_ip => creation_ip
+	v_id := content_item.new (
+       		name => ('spam_message body_id-' || p_body_id || ' ' || mime_type),
+                creation_date   => creation_date,
+                creation_user   => creation_user,
+                creation_ip     => creation_ip,
+		mime_type       => mime_type,
+                text            => p_text,
+                storage_type    => 'text'
 	);
-	v_id := acs_content.new (
-		content_id => v_id,
-		mime_type => mime_type
-	);
-	select content into tmp_blob from acs_contents 
-		where content_id = v_id;
-	string_to_blob(text, tmp_blob);
+
+        -- set the new revision live
+        v_rev_id := content_item.get_latest_revision(v_id);
+        content_item.set_live_revision(v_rev_id);
+
 	return v_id;
+
     end new_content;
 
    procedure approve(spam_id IN spam_messages.spam_id%TYPE)

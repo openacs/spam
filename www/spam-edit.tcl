@@ -39,24 +39,23 @@ set num_recipients [db_string spam_get_num_recipients "
 
 # XXX: cut-and-paste programming, should be a proc
 
-if [acs_mail_multipart_p $content_object_id] {
-    foreach type {plain html} {
-	db_1row spam_get_multipart_${type}_text "
-	    select content 
-	    from acs_mail_multipart_parts, acs_contents
-	    where multipart_id = :content_object_id
-	       and content_id = content_object_id
-  	       and mime_type = 'text/$type'
-	"
-	set ${type}_text $content
-    }
+if [acs_mail_multipart_p $content_item_id] {
+
+    db_1row spam_get_multipart_plain_text "select content as plain_text from acs_mail_multipart_parts, acs_contents
+    where multipart_id = :content_item_id
+    and content_id = content_item_id and mime_type = 'text/plain'"
+
+    db_1row spam_get_multipart_html_text "select content as html_text from acs_mail_multipart_parts, acs_contents
+    where multipart_id = :content_item_id
+    and content_id = content_item_id and mime_type = 'text/html'"
+
 } else {
     set plain_text ""
     set html_text ""
     db_1row spam_get_text {
 	select content, mime_type
 	  from acs_contents
-	where content_id = :content_object_id
+	where content_id = :content_item_id
     }
     if {$mime_type == "text/plain"} {
 	set plain_text $content

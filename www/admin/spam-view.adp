@@ -21,7 +21,7 @@
  </tr>
  <tr>
   <th valign="top" align="left">HTML message body</th>
-  <td>@content@
+  <td>@html_text@
   </td>
  </tr>
 </table>

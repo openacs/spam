@@ -15,3 +15,8 @@ ad_page_contract {
 set root [nsv_get acs_properties root_directory]
 source "$root/packages/spam/www/spam-show-users.tcl"
 return
+
+
+# TilmannS: since I don't know how to tell the QD how to deal with
+# sourced pages I simply copied ../spam-show-users.xql and
+# ../spam-show-users-oracle.xql into admin/
