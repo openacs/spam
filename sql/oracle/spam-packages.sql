@@ -222,13 +222,13 @@ as
                         -- elegant way to do this though. (TilmannS)
                         update acs_mail_multipart_parts set content_item_id=null where multipart_id=v_content_obj;
 
-                        content_item.delete(v_parts_row.content_item_id);
+                        content_item.del(v_parts_row.content_item_id);
                 end loop;
 
-     		acs_mail_multipart.delete(v_content_obj);
+     		acs_mail_multipart.del(v_content_obj);
 
 	else 
-		content_item.delete(v_content_obj);
+		content_item.del(v_content_obj);
 	end if;
 
 	if plain_text is not null then
@@ -290,7 +290,7 @@ as
         creation_date in acs_objects.creation_date%TYPE default sysdate,
         creation_user in acs_objects.creation_user%TYPE default null,
         creation_ip   in acs_objects.creation_ip%TYPE   default null,
-        object_type   in acs_objects.object_type%TYPE   default null,
+        object_type   in acs_objects.object_type%TYPE   default 'acs_content',
 	mime_type     in cr_revisions.mime_type%TYPE    default 'text/plain',
 	p_text	      in varchar2			default null,
         p_body_id     in acs_mail_bodies.body_id%TYPE
