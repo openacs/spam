@@ -9,7 +9,7 @@ ad_page_contract {
     title:onevalue
     date_widget:onevalue
     time_widget:onevalue
-    context_bar:onevalue
+    context:onevalue
 }
 
 ad_require_permission $spam_id write
@@ -70,7 +70,7 @@ set date_widget [ad_dateentrywidget send_date $send_date]
 set time_widget [spam_timeentrywidget send_time $send_time]
 set confirm_target "spam-update"
 set export_vars [export_form_vars spam_id num_recipients confirm_target]
-set context_bar [ad_context_bar "Edit Spam"]
+set context [list "Edit Spam"]
 
 ad_return_template
 

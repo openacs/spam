@@ -2,10 +2,7 @@
 
 <master>
 <property name="title">Confirm Spam</property>
-
-<h2>Confirm Spam</h2>
-@navbar@
-<hr>
+<property name="context">@context@</property>
 
 You are about to send the following message to @num_recipients@ users.  
 (<a href="spam-show-users">See list of recipients</a>)

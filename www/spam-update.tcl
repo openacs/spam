@@ -24,7 +24,7 @@ spam_update_message \
 	-plain $body_plain \
 	-html $body_html
 
-set context_bar [ad_context_bar "Spam Updated"]
+set context [list "Spam Updated"]
 
 #ns_return 200 text/html $date
 ad_return_template

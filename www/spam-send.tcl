@@ -65,7 +65,7 @@ spam_new_message \
 # inserted and in the queue; now display a message to the user 
 # telling them how to link, etc.
 
-set navbar [ad_context_bar]
+set context {queued}
 
 ad_return_template
 

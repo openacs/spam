@@ -1,9 +1,6 @@
 <master>
 <property name="title">Spam Queued</property>
-
-<h2>Spam Queued for Sending</h2>
-@navbar@
-<hr>
+<property name="context">@context@</property>
 
 Success!  
 

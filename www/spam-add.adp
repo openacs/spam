@@ -1,11 +1,6 @@
 <master>
 <property name="title">Create a New Spam</property>
-
-<h2>Create a New Spam</h2>
-
-@navbar@
-
-<hr>
+<property name="context">@context@</property>
 
 <p>This message will be sent to @num_recipients@ users. (<a href="spam-show-users">See list of recipients</a>)
 </p>

@@ -21,7 +21,7 @@ ad_page_contract {
     export_vars:onevalue
     date_widget:onevalue
     time_widget:onevalue
-    navbar:onevalue
+    context:onevalue
 } 
 
 set sql_query [ad_get_client_property spam "sql_query"]
@@ -49,7 +49,7 @@ set export_vars [export_form_vars num_recipients spam_id]
 set date_widget [ad_dateentrywidget send_date]
 set time_widget [spam_timeentrywidget send_time]
 
-set navbar [ad_context_bar]
+set context [list "add message"]
 
 ad_return_template
 

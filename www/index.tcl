@@ -10,7 +10,7 @@ ad_page_contract {
 
 } -properties {
     spam_queue:multirow
-    context_bar:onevalue
+    context:onevalue
 }
 
 set user_id [ad_maybe_redirect_for_registration]
@@ -61,6 +61,4 @@ db_multirow spam_sent spam_sent {
     order by sm.send_date
 }
 
-set context_bar [ad_context_bar]
-
-ad_return_template
+set context [list]

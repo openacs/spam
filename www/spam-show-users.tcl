@@ -2,6 +2,7 @@ ad_page_contract {
     shows the list of users about to receive a spam message
 } -properties {
     spam_list:multirow
+    context:onevalue
 }
 
 set sql_query [ad_get_client_property "spam" "sql_query"]
@@ -22,5 +23,4 @@ db_multirow spam_list spam_get_party_list  "
       and p2.party_id = parties.party_id
 "
 
-ad_return_template
-
+set context [list "show users"]

@@ -1,9 +1,7 @@
 <master>
 <property name="title">Show spam recipients</property>
-<h2>Show spam recipients</h2> 
-
-<hr>
-
+<property name="context">@context@</property>
+    
 The following people are about to receive your spam:
 
 <ul>

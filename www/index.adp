@@ -1,10 +1,6 @@
 <master>
-
-<h2>Spam Admin</h2>
-
-@context_bar@
-
-<hr>
+<property name="title">Spam</property>
+<property name="context">@context@</property>
 
 <h3>Spam Queue</h3>
 

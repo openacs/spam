@@ -1,9 +1,6 @@
 <master>
 <property name="title">View Spam</property>
-
-<h2>View Spam</h2>
-@context_bar@
-<hr>
+<property name="context">@context@</property>
 
 <table>
  <tr>

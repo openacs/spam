@@ -1,7 +1,6 @@
 <master>
-<h2>Spam Updated</h2>
-@context_bar@
-<hr>
+<property name="title">Spam Updated</property>
+<property name="context">@context@</property>
 
 Your spam was updated successfully.  Back to the <a href="index">Admin</a> page.
 
