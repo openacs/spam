@@ -1,6 +1,6 @@
 <master>
 <property name="title">Spam Queued</property>
-<property name="context">@context@</property>
+<property name="context">@context;noquote@</property>
 
 Success!  
 

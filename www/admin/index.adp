@@ -1,6 +1,6 @@
 <master>
 <property name="title">Spam Administration</property>
-<property name="context">@context@</property>
+<property name="context">@context;noquote@</property>
 
 <h3>Spam Queue</h3>
 

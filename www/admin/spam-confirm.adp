@@ -25,19 +25,19 @@ in plain text:
 </p>
 
 <p>
-<if @body_html@ nil>(no HTML)</if>
+<if @body_html;noquote@ nil>(no HTML)</if>
 <else>
 in HTML:
 
 <blockquote>
-@body_html@
+@body_html;noquote@
 </blockquote>
 
 </else>
 </p>
 
 <form action="@confirm_target@" method="post">
-@export_vars@
+@export_vars;noquote@
 <center><input type="submit" value="Confirm"></center>
 </form>
 

@@ -2,7 +2,7 @@
 
 <master>
 <property name="title">Confirm Spam</property>
-<property name="context">@context@</property>
+<property name="context">@context;noquote@</property>
 
 You are about to send the following message to @num_recipients@ users.  
 (<a href="spam-show-users">See list of recipients</a>)
@@ -25,19 +25,19 @@ in plain text:
 </p>
 
 <p>
-<if @body_html@ nil>(no HTML)</if>
+<if @body_html;noquote@ nil>(no HTML)</if>
 <else>
 in HTML:
 
 <blockquote>
-@body_html@
+@body_html;noquote@
 </blockquote>
 
 </else>
 </p>
 
 <form action="@confirm_target@" method="post">
-@export_vars@
+@export_vars;noquote@
 <center><input type="submit" value="Confirm"></center>
 </form>
 

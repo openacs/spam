@@ -1,6 +1,6 @@
 <master>
 <property name="title">Show spam recipients</property>
-<property name="context">@context@</property>
+<property name="context">@context;noquote@</property>
     
 The following people are about to receive your spam:
 
