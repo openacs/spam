@@ -43,5 +43,15 @@
 </fullquery>
 
 
+<fullquery name="spam_get_text">      
+      <querytext>
+      
+	select content, mime_type
+	  from cr_revisions
+	where revision_id = content_item__get_live_revision(:content_item_id)
+    
+      </querytext>
+</fullquery>
  
+
 </queryset>

@@ -60,8 +60,8 @@ if [acs_mail_multipart_p $content_item_id] {
 } else {
     db_1row spam_get_text {
 	select content, mime_type
-	  from acs_contents
-	where content_id = :content_object_id
+	  from cr_revisions
+	where revision_id = content_item.get_live_revision(:content_item_id)
     }
     if {$mime_type == "text/plain"} {
 	set plain_text $content
