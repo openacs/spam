@@ -106,7 +106,9 @@
             <file type="query_file" db_type="oracle" path="www/toggle-approval-oracle.xql"/>
             <file type="query_file" db_type="postgresql" path="www/toggle-approval-postgresql.xql"/>
             <file type="content_page" path="www/toggle-approval.tcl"/>
-        </files>
+            <file type="content_page" path="www/images/spacer.gif"/>
+
+       </files>
         <parameters>
             <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="SpamSender"  default="spam-robot@bill.arsdigita.com" description="fully-qualified e-mail address that will go in the To: header, e.g., 'spam-robot@yourdomain.com'"/>
         </parameters>
