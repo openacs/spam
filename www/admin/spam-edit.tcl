@@ -28,6 +28,7 @@ db_1row spam_get_message {
 
 if {$sent_p == "t"} { 
     ad_returnredirect "[spam_base]spam-view?spam_id=$spam_id"
+    ad_script_abort
 }
 
 ad_set_client_property spam "sql_query" $sql_query

@@ -29,6 +29,7 @@ db_1row spam_get_message {
 
 if {$sent_p == "t"} { 
     ad_returnredirect "[spam_base]spam-view?spam_id=$spam_id"
+    ad_script_abort
 }
 
 ad_set_client_property spam "sql_query" $sql_query
@@ -63,6 +64,7 @@ if [acs_mail_multipart_p $content_item_id] {
 	set html_text $content
     } else {
 	ad_return_error "invalid content type in spam: $mime_type"
+        ad_script_abort
     }
 }     
 
