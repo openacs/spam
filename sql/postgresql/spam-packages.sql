@@ -2,7 +2,7 @@
 -- 
 
 
-create function spam__new (integer,varchar,timestamp,text,varchar,text,varchar,varchar,integer,timestamp,integer,varchar,varchar,boolean,varchar,timestamp)
+create function spam__new (integer,varchar,timestamp,text,varchar,text,varchar,varchar,integer,timestamp with time zone,integer,varchar,varchar,boolean,varchar,timestamp with time zone)
 returns integer as '
 declare
         p_spam_id         alias for $1;     -- default null
@@ -124,7 +124,7 @@ end;
 
 
 -- procedure edit
-create function spam__edit (integer,text,varchar,varchar,varchar,timestamp) returns integer as '
+create function spam__edit (integer,text,varchar,varchar,varchar,timestamp with time zone) returns integer as '
 declare
         p_spam_id       alias for $1;     -- spam_messages.spam_id%TYPE,
         p_title         alias for $2;     -- acs_mail_bodies.header_subject%TYPE default null
@@ -249,7 +249,7 @@ end;
 
 
 
-create function spam__new_content (integer,timestamp,integer,varchar,varchar,varchar,varchar,integer)
+create function spam__new_content (integer,timestamp with time zone,integer,varchar,varchar,varchar,varchar,integer)
 returns integer as '
 declare
         context_id    alias for $1;      -- acs_objects.context_id%TYPE
