@@ -32,11 +32,11 @@
            approved_p,
            sm.sql_query,
            sm.header_subject as title,
-           acs_permission__permission_p(sm.spam_id, 2924, 'admin') 
+           acs_permission__permission_p(sm.spam_id, :user_id, 'admin') 
              as admin_p
       from spam_messages_all sm
      where sent_p = 'f'
-           and acs_permission__permission_p(sm.spam_id, 2924, 'write') = 't'
+           and acs_permission__permission_p(sm.spam_id, :user_id, 'write') = 't'
  
      order by sm.send_date
       </querytext>

@@ -4,7 +4,7 @@
 <fullquery name="get_num_recipients">      
       <querytext>
       
-    select count(*) from ($sql_query) 
+    select count(*) from ($sql_query) user_query
 
       </querytext>
 </fullquery>
