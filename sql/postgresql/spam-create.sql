@@ -6,7 +6,7 @@ create table spam_messages (
                         on delete cascade,
 	-- date to send the spam out 
 	-- spam will be put in mail queue at that time
-	send_date	timestamp not null,
+	send_date	timestamptz not null,
 	-- the sql query for selecting users.
 	-- must be of the form "select party_id from ... where ..."
 	sql_query	varchar(4000) not null,

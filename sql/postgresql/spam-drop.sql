@@ -12,10 +12,10 @@ select acs_object_type__drop_type(
 );
 
 
-drop function spam__new (integer,varchar,timestamp,text,varchar,text,varchar,varchar,integer,timestamp,integer,varchar,varchar,boolean,varchar,timestamp);
+drop function spam__new (integer,varchar,timestamptz,text,varchar,text,varchar,varchar,integer,timestamptz,integer,varchar,varchar,boolean,varchar,timestamptz);
 
-drop function spam__edit (integer,text,varchar,varchar,varchar,timestamp);
+drop function spam__edit (integer,text,varchar,varchar,varchar,timestamptz);
 
-drop function spam__new_content (integer,timestamp,integer,varchar,varchar,varchar,varchar,integer);
+drop function spam__new_content (integer,timestamptz,integer,varchar,varchar,varchar,varchar,integer);
 
 drop function spam__approve (integer);
