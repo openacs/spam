@@ -32,7 +32,7 @@ The spam package uses the acs-mail package as the store for message
 content, so all spam content also ends up in the
 <code>acs_contents</code>; the acs-mail package also handles the
 generation of multipart/alternative e-mail for us, and the actual
-transport of outgoing message via <code>ns_sendmail</code>.
+transport of outgoing message via <code>acs_mail_lite::send </code>.
 
 <p>The spam package is intended to be used as a singleton service, so
 other applications can link to a single instance of the spam package.
