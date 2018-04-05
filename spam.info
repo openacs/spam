@@ -18,7 +18,7 @@
         <summary>Send mail to collections of users.</summary>
         <release-date>2001-02-06</release-date>
         <vendor url="http://openacs.org">OpenACS</vendor>
-        <description format="text/plain">Provides a UI for sending e-mail to groups of users, selected based on some criteria in the database.  Applications may link to the spam system with their own set of criteria (SQL queries).  Bulk-mail is now the prefered package for this functionality.  </description>
+        <description format="text/plain">Provides a UI for sending e-mail to groups of users, selected based on some criteria in the database.  Applications may link to the spam system with their own set of criteria (SQL queries).  Bulk-mail is now the preferred package for this functionality.  </description>
 
         <provides url="spam" version="4.1"/>
         <requires url="acs-content" version="4.1"/>
