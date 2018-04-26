@@ -48,6 +48,6 @@ if [acs_mail_multipart_p $content_item_id] {
     }
 }     
 
-set context [list]
+set context {}
 
 ad_return_template
