@@ -61,4 +61,4 @@ db_multirow spam_sent spam_sent {
     order by sm.send_date
 }
 
-set context {}
+set context [list]
