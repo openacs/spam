@@ -38,14 +38,14 @@ ad_proc -public spam_base {} {
 
 
 ad_proc spam_new_message {
-    {-context_id [db_null]}
-    {-send_date [db_null]}
+    {-context_id ""}
+    {-send_date ""}
     {-spam_id ""}
     {-subject ""}
     {-plain  ""}
     {-html ""}
-    {-sql [db_null]}
-    {-approved_p [db_null]}
+    {-sql ""}
+    {-approved_p ""}
 } {
     insert a new spam message into the acs_messages and spam_messages 
     table, and indirectly into the content repository.
@@ -86,12 +86,12 @@ ad_proc spam_new_message {
 }
 
 ad_proc spam_update_message {
-    {-send_date [db_null]}
+    {-send_date ""}
     {-spam_id ""}
     {-subject ""}
     {-plain  ""}
     {-html ""}
-    {-sql "[db_null]"}
+    {-sql ""}
 } {
     update an existing spam message into the acs_messages and spam_messages 
     table, and indirectly into the content repository.
